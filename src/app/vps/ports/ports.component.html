@@ -1,0 +1,65 @@
+<button class="btn btn-primary" (click)="allocModal = true">Добавить порт</button>
+
+<clr-datagrid>
+  <clr-dg-column>ID</clr-dg-column>
+  <clr-dg-column>IP</clr-dg-column>
+  <clr-dg-column>Публичный адрес</clr-dg-column>
+  <clr-dg-column>Локальный порт</clr-dg-column>
+  <clr-dg-column>Занят</clr-dg-column>
+  <clr-dg-column>Действия</clr-dg-column>
+
+  <clr-dg-row *ngFor="let item of ports">
+    <clr-dg-cell>{{ item._id }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.ip ? item.ip.ip : 'Не привязан' }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.public_ip }}:{{ item.port }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.localPort || '-' }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.allocated ? 'Да' : 'Нет' }}</clr-dg-cell>
+    <clr-dg-cell>
+      <a href="#" *ngIf="item.allocated" (click)="free(item._id); false">Освободить</a>
+    </clr-dg-cell>
+  </clr-dg-row>
+
+  <clr-dg-footer>
+    <clr-dg-pagination #pagination [clrDgPageSize]="10">
+      <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Портов на странице</clr-dg-page-size>
+      {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+      {{pagination.totalItems}} портов
+    </clr-dg-pagination>
+  </clr-dg-footer>
+</clr-datagrid>
+
+<div class="modal" *ngIf="allocModal">
+  <div class="modal-dialog" role="dialog" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button aria-label="Close" class="close" type="button" (click)="allocModal = false;">
+          <clr-icon aria-hidden="true" shape="close"></clr-icon>
+        </button>
+        <h3 class="modal-title">Добавить порт</h3>
+      </div>
+      <div class="modal-body">
+        <form clrForm>
+          <clr-combobox-container>
+            <label>Выберите сервер</label>
+            <clr-combobox [(ngModel)]="addForm.vserver_id" name="vserver_id" required placeholder="Выберите сервер">
+              <clr-options>
+                <clr-option *ngFor="let item of vservers" [clrValue]="item._id">[{{ item.numId }}] {{ item.ip }}
+                </clr-option>
+              </clr-options>
+            </clr-combobox>
+          </clr-combobox-container>
+
+          <clr-input-container>
+            <label>Локальный порт</label>
+            <input clrInput [(ngModel)]="addForm.localPort" name="localPort" />
+          </clr-input-container>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" type="button" (click)="allocModal = false;">Закрыть</button>
+        <button class="btn btn-primary" type="button" (click)="add()">Добавить</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" aria-hidden="true" *ngIf="allocModal"></div>

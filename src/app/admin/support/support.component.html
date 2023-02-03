@@ -1,0 +1,105 @@
+<button class="btn btn-primary" (click)="createModal = true">Создать</button>
+
+<clr-datagrid>
+  <clr-dg-column>ID</clr-dg-column>
+  <clr-dg-column>Пользователь</clr-dg-column>
+  <clr-dg-column>Тема обращения</clr-dg-column>
+  <clr-dg-column>Решено</clr-dg-column>
+  <clr-dg-column>Действия</clr-dg-column>
+
+  <clr-dg-row *ngFor="let item of tickets">
+    <clr-dg-cell>{{ item._id }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.user_email || '' }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.title }}</clr-dg-cell>
+    <clr-dg-cell>
+      <a href="#" (click)="toggle(item._id); false">{{ item.solved ? 'Да' : 'Нет' }}</a>
+    </clr-dg-cell>
+    <clr-dg-cell>
+      <a href="#" (click)="view(item._id); false">Открыть</a>
+    </clr-dg-cell>
+  </clr-dg-row>
+</clr-datagrid>
+
+<div class="modal" *ngIf="viewModal && !!ticket">
+  <div class="modal-dialog" role="dialog" aria-hidden="true" style="overflow: auto;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button aria-label="Close" class="close" type="button" (click)="viewModal = false;">
+          <clr-icon aria-hidden="true" shape="close"></clr-icon>
+        </button>
+        <h3 class="modal-title">Просмотр обращения "{{ ticket.title }}"</h3>
+      </div>
+      <div class="modal-body">
+        <form clrForm>
+          <clr-input-container>
+            <label>Email пользователя</label>
+            <select clrInput [(ngModel)]="answerData.status" name="status">
+              <option value="wait">Ожидание</option>
+              <option value="success">Успешно</option>
+              <option value="fail">Проблема</option>
+            </select>
+          </clr-input-container>
+          <clr-input-container>
+            <label>Заголовок</label>
+            <input clrInput type="text" [(ngModel)]="answerData.title" name="title" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Текст</label>
+            <input clrInput type="text" [(ngModel)]="answerData.text" name="text" />
+          </clr-input-container>
+          <button class="btn btn-primary" type="button" (click)="answer()">Ответить</button>
+        </form>
+
+        <ul class="clr-timeline clr-timeline-vertical">
+          <li class="clr-timeline-step" *ngFor="let item of messages; let first = first">
+            <div class="clr-timeline-step-header">{{ getDate(item._id) }}</div>
+            <clr-icon shape="dot-circle" *ngIf="!first; else showStatus"></clr-icon>
+            <ng-template #showStatus>
+              <clr-spinner clrMedium *ngIf="item.status === 'wait'"></clr-spinner>
+              <clr-icon shape="success-standard" *ngIf="item.status === 'success'"></clr-icon>
+              <clr-icon shape="error-standard" *ngIf="item.status === 'fail'"></clr-icon>
+            </ng-template>
+            <div class="clr-timeline-step-body">
+              <span class="clr-timeline-step-title">{{ item.title }}</span>
+              <span class="clr-timeline-step-description">{{ item.text }}</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" *ngIf="createModal">
+  <div class="modal-dialog" role="dialog" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button aria-label="Close" class="close" type="button" (click)="createModal = false;">
+          <clr-icon aria-hidden="true" shape="close"></clr-icon>
+        </button>
+        <h3 class="modal-title">Создать обращение</h3>
+      </div>
+      <div class="modal-body">
+        <form clrForm>
+          <clr-input-container>
+            <label>Email пользователя</label>
+            <input clrInput type="text" [(ngModel)]="createData.email" name="email" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Заголовок</label>
+            <input clrInput type="text" [(ngModel)]="createData.title" name="title" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Текст</label>
+            <input clrInput type="text" [(ngModel)]="createData.text" name="text" />
+          </clr-input-container>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" type="button" (click)="createModal = false;">Отмена</button>
+        <button class="btn btn-primary" type="button" (click)="create()">Создать</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" aria-hidden="true" *ngIf="createModal || viewModal"></div>

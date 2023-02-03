@@ -1,0 +1,11 @@
+<clr-datagrid>
+  <clr-dg-column>Заголовок</clr-dg-column>
+  <clr-dg-column>Текст</clr-dg-column>
+  <clr-dg-column>Статус</clr-dg-column>
+
+  <clr-dg-row *ngFor="let item of abuses">
+    <clr-dg-cell>{{ item.title }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.text }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.resolved ? 'Получен ответ' : 'Ожидание' }}</clr-dg-cell>
+  </clr-dg-row>
+</clr-datagrid>

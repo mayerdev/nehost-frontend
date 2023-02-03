@@ -1,0 +1,410 @@
+<div class="main-container" *ngIf="api.session">
+  <div class="alert alert-app-level alert-info" role="alert" *ngIf="!api.session.dogovor.accepted">
+    <div class="alert-items">
+      <div class="alert-item static">
+        <div class="alert-icon-wrapper">
+          <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
+        </div>
+        <div class="alert-text">
+          Напишите в поддержку через онлайн-чат или по почте support@rifty.ru для завершения заключения договора
+        </div>
+        <div class="alert-actions">
+          <a routerLink="/panel/support" class="btn alert-action">Текущий статус</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="alert alert-app-level alert-danger" role="alert" *ngIf="abuse !== null">
+    <div class="alert-items">
+      <div class="alert-item static">
+        <div class="alert-icon-wrapper">
+          <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
+        </div>
+        <div class="alert-text">
+          Внимание, у Вас имеется неразрешённая жалоба, свяжитесь пожалуйста с поддержкой.
+        </div>
+        <div class="alert-actions">
+          <a routerLink="/panel/abuse" class="btn alert-action">Жалобы</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <header class="header-6">
+    <div class="branding">
+      <a routerLink="/panel/dashboard" class="nav-link">
+        <span class="title">НеХостинг | Панель управления</span>
+      </a>
+    </div>
+    <div class="header-nav">
+      <a routerLink="/panel/dashboard" class="nav-link" routerLinkActive="active"><span class="nav-text">Панель
+          управления</span></a>
+      <!-- <a routerLink="/panel/invoices" class="nav-link" routerLinkActive="active"><span class="nav-text">Счета</span></a> -->
+      <a routerLink="/panel/support" class="nav-link" routerLinkActive="active"><span
+          class="nav-text">Обращения</span></a>
+      <!-- <a routerLink="/panel/knowledge" class="nav-link" routerLinkActive="active"><span class="nav-text">База -->
+          <!-- знаний</span></a> -->
+      <a routerLink="/admin/users" class="nav-link" routerLinkActive="active"
+        *ngIf="api.session.group === 'admin'"><span class="nav-text">Админ-панель</span></a>
+    </div>
+    <div class="header-actions">
+      <a href="#" class="nav-link nav-icon" (click)="cpModal = true; false">
+        <clr-icon shape="cog"></clr-icon>
+      </a>
+      <a href="#" class="nav-link nav-icon" (click)="api.logout(); false">
+        <clr-icon shape="logout"></clr-icon>
+      </a>
+    </div>
+  </header>
+  <nav class="subnav">
+    <ul class="nav">
+      <li class="nav-item">
+        <a routerLink="/panel/dashboard" class="nav-link" routerLinkActive="active">Обзор</a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="/vservers/list" class="nav-link" routerLinkActive="active">Виртуальные серверы</a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="/shared/list" class="nav-link" routerLinkActive="active">Хостинг сайтов</a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="/reseller/list" class="nav-link" routerLinkActive="active">Реселлер-хостинг</a>
+      </li>
+    </ul>
+  </nav>
+  <div class="content-container">
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+    <nav class="sidenav">
+      <section class="sidenav-content" *ngIf="section === 'panel'">
+        <a href="#" class="nav-link" (click)="false">{{ api.session.email }}</a>
+        <a href="#" class="nav-link" (click)="false">
+          Баланс: <b>{{ formatPrice(api.session.balance) }}</b><br>
+          Лимит баланса: <b>-{{ formatPrice(api.session.credit_limit) }}</b>
+        </a>
+        <section class="nav-group">
+          <label>Управление</label>
+          <ul class="nav-list">
+            <li><a routerLink="/panel/pay" routerLinkActive="active" class="nav-link">Пополнить баланс</a></li>
+            <li><a routerLink="/panel/abuse" routerLinkActive="active" class="nav-link">Жалобы</a></li>
+            <li><a href="/assets/oferta.pdf" routerLinkActive="active" class="nav-link">Договор-оферта</a></li>
+            <li><a href="/assets/policy.pdf" routerLinkActive="active" class="nav-link">Политика
+                конфиденциальности</a></li>
+            <li><a routerLink="/panel/reselling" routerLinkActive="active" class="nav-link">Программа реселлинга</a>
+            </li>
+          </ul>
+        </section>
+      </section>
+
+      <section class="sidenav-content" *ngIf="section === 'admin'">
+        <section class="nav-group">
+          <label>Администрирование</label>
+          <ul class="nav-list">
+            <li><a routerLink="/admin/users" routerLinkActive="active" class="nav-link">Пользователи</a></li>
+            <li><a routerLink="/admin/invoices" routerLinkActive="active" class="nav-link">Счета</a></li>
+            <li><a routerLink="/admin/support" routerLinkActive="active" class="nav-link">Обращения</a></li>
+            <li><a routerLink="/admin/abuse" routerLinkActive="active" class="nav-link">Жалобы</a></li>
+            <li><a routerLink="/admin/promocodes" routerLinkActive="active" class="nav-link">Промокоды</a></li>
+            <li><a routerLink="/admin/vservers" routerLinkActive="active" class="nav-link">Виртуальные серверы</a></li>
+            <li><a routerLink="/admin/shareds" routerLinkActive="active" class="nav-link">Хостинг сайтов</a></li>
+            <li><a routerLink="/admin/locations" routerLinkActive="active" class="nav-link">Локации</a></li>
+            <li><a routerLink="/admin/nodes" routerLinkActive="active" class="nav-link">Ноды</a></li>
+            <li><a routerLink="/admin/subnets" routerLinkActive="active" class="nav-link">Подсети</a></li>
+            <li><a routerLink="/admin/vnat" routerLinkActive="active" class="nav-link">vNAT</a></li>
+            <li><a routerLink="/admin/vtariffs" routerLinkActive="active" class="nav-link">Тарифы (VPS)</a></li>
+            <li><a routerLink="/admin/stariffs" routerLinkActive="active" class="nav-link">Тарифы (Хостинг сайтов)</a>
+            </li>
+          </ul>
+        </section>
+      </section>
+
+      <section class="sidenav-content" *ngIf="section === 'vservers'">
+        <section class="nav-group">
+          <label>Виртуальные серверы</label>
+          <ul class="nav-list">
+            <li><a routerLink="/vservers/list" routerLinkActive="active" class="nav-link">Список серверов</a></li>
+            <li><a routerLink="#" class="nav-link" (click)="createServer(); false">Создать сервер</a></li>
+            <li><a routerLink="/vservers/vnat" routerLinkActive="active" class="nav-link">Управление vNAT</a></li>
+            <!-- <li><a routerLink="/vservers/vfirewall" routerLinkActive="active" class="nav-link">Управление vFirewall</a></li> -->
+            <!-- <li><a routerLink="/vservers/ips" routerLinkActive="active" class="nav-link">Управление IPv4</a></li> -->
+          </ul>
+        </section>
+      </section>
+    </nav>
+  </div>
+  <div class="operations" *ngIf="section === 'panel'">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Дата</th>
+          <th>Описание</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of operations">
+          <td>{{ item.numId }}</td>
+          <td>{{ getDate(item._id) }}</td>
+          <td>{{ item.description }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<clr-wizard #createVServer [(clrWizardOpen)]="cvsOpen">
+  <clr-wizard-title>Создать виртуальный сервер</clr-wizard-title>
+
+  <clr-wizard-button [type]="'cancel'">Закрыть</clr-wizard-button>
+  <clr-wizard-button [type]="'previous'">Назад</clr-wizard-button>
+  <clr-wizard-button [type]="'next'">Далее</clr-wizard-button>
+  <clr-wizard-button [type]="'finish'" (click)="createVS()">Создать</clr-wizard-button>
+
+  <clr-wizard-page>
+    <ng-template clrPageTitle>Локация и тариф</ng-template>
+
+    <clr-select-container>
+      <label>Локация</label>
+      <select clrSelect class="w-i" [(ngModel)]="createVsForm.location_id" (ngModelChange)="getNodes()"
+        placeholder="Выберите локацию" name="location_id" *ngIf="!loading; else loadingBar">
+        <option *ngFor="let item of locations" [value]="item._id">{{ item.name }}</option>
+      </select>
+    </clr-select-container>
+
+    <clr-select-container>
+      <label>Группа серверов</label>
+      <select clrSelect class="w-i" [(ngModel)]="createVsForm.node_id" (ngModelChange)="getTariffs()"
+        placeholder="Выберите группу" name="node_id" *ngIf="!loading; else loadingBar">
+        <option *ngFor="let item of nodes" [value]="item._id">{{ item.visible_name }}</option>
+      </select>
+    </clr-select-container>
+
+    <ng-template #loadingBar>
+      <div class="progress loop"><progress></progress></div>
+    </ng-template>
+
+    <br />
+
+    <clr-datagrid>
+      <clr-dg-column>Наименование</clr-dg-column>
+      <clr-dg-column>vCPU</clr-dg-column>
+      <clr-dg-column>RAM</clr-dg-column>
+      <clr-dg-column>Диск</clr-dg-column>
+      <clr-dg-column>Стоимость</clr-dg-column>
+      <clr-dg-column>Действия</clr-dg-column>
+
+      <clr-dg-row *ngFor="let item of tariffs">
+        <clr-dg-cell>{{ item.name }}</clr-dg-cell>
+        <clr-dg-cell>{{ item.vcpu }}</clr-dg-cell>
+        <clr-dg-cell>{{ item.ram * 1024 }} MB</clr-dg-cell>
+        <clr-dg-cell>{{ item.disk }} GB</clr-dg-cell>
+        <clr-dg-cell>{{ formatPrice(item.price) }}</clr-dg-cell>
+        <clr-dg-cell>
+          <a href="#" *ngIf="createVsForm.tariff_id !== item._id"
+            (click)="createVsForm.tariff_id = item._id; false">Выбрать</a>
+
+          <clr-icon shape="check" *ngIf="createVsForm.tariff_id === item._id"></clr-icon>
+        </clr-dg-cell>
+      </clr-dg-row>
+    </clr-datagrid>
+  </clr-wizard-page>
+
+  <clr-wizard-page>
+    <ng-template clrPageTitle>Сеть</ng-template>
+    <clr-checkbox-container>
+      <label>Рекомендуемые порты:</label>
+      <clr-checkbox-wrapper>
+        <input type="checkbox" clrCheckbox [(ngModel)]="createVsForm.ports.http" name="http" />
+        <label>HTTP (80)</label>
+      </clr-checkbox-wrapper>
+      <clr-checkbox-wrapper>
+        <input type="checkbox" clrCheckbox [(ngModel)]="createVsForm.ports.https" name="https" />
+        <label>HTTPS (443)</label>
+      </clr-checkbox-wrapper>
+      <clr-checkbox-wrapper>
+        <input type="checkbox" clrCheckbox [(ngModel)]="createVsForm.ports.ftp" name="ftp" />
+        <label>FTP (21)</label>
+      </clr-checkbox-wrapper>
+      <clr-checkbox-wrapper>
+        <input type="checkbox" clrCheckbox [(ngModel)]="createVsForm.ports.samp" name="samp" />
+        <label>SAMP (7777)</label>
+      </clr-checkbox-wrapper>
+      <clr-checkbox-wrapper>
+        <input type="checkbox" clrCheckbox [(ngModel)]="createVsForm.ports.minecraft" name="minecraft" />
+        <label>Minecraft (25565)</label>
+      </clr-checkbox-wrapper>
+    </clr-checkbox-container>
+
+    <div class="alert alert-info" role="alert" style="margin-top: 25px;">
+      <div class="alert-items">
+        <div class="alert-item static">
+          <div class="alert-icon-wrapper">
+            <clr-icon class="alert-icon" shape="info-circle"></clr-icon>
+          </div>
+          <span class="alert-text">
+            Другие порты Вы сможете добавить позже при настройке vNAT.
+          </span>
+        </div>
+      </div>
+    </div>
+  </clr-wizard-page>
+
+  <clr-wizard-page>
+    <ng-template clrPageTitle>Операционная система</ng-template>
+    <div class="clr-row">
+      <div class="clr-col-lg-4 clr-col-sm-6 clr-col-12">
+        <div class="card">
+          <h4 class="card-header">CentOS 7</h4>
+          <div class="card-footer">
+            <button class="btn btn-primary" (click)="createVsForm.os = templates.centos7"
+              [disabled]="createVsForm.os === templates.centos7">Выбрать</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="clr-col-lg-4 clr-col-sm-6 clr-col-12">
+        <div class="card">
+          <h4 class="card-header">RockyLinux 8</h4>
+          <div class="card-footer">
+            <button class="btn btn-primary" (click)="createVsForm.os = templates.rockylinux8"
+              [disabled]="createVsForm.os === templates.rockylinux8">Выбрать</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="clr-col-lg-4 clr-col-sm-6 clr-col-12">
+        <div class="card">
+          <h4 class="card-header">Debian 10</h4>
+          <div class="card-footer">
+            <button class="btn btn-primary" (click)="createVsForm.os = templates.debian10"
+              [disabled]="createVsForm.os === templates.debian10">Выбрать</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="clr-col-lg-4 clr-col-sm-6 clr-col-12">
+        <div class="card">
+          <h4 class="card-header">Debian 11</h4>
+          <div class="card-footer">
+            <button class="btn btn-primary" (click)="createVsForm.os = templates.debian11"
+              [disabled]="createVsForm.os === templates.debian11">Выбрать</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="clr-col-lg-4 clr-col-sm-6 clr-col-12">
+        <div class="card">
+          <h4 class="card-header">Ubuntu 20.04</h4>
+          <div class="card-footer">
+            <button class="btn btn-primary" (click)="createVsForm.os = templates.ubuntu20"
+              [disabled]="createVsForm.os === templates.ubuntu20">Выбрать</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </clr-wizard-page>
+
+  <clr-wizard-page>
+    <ng-template clrPageTitle>Создание пользователя</ng-template>
+    <clr-input-container>
+      <label>Логин</label>
+      <input clrInput class="w-i" value="root" disabled="true" name="username" />
+    </clr-input-container>
+    <clr-input-container>
+      <label>Пароль</label>
+      <input clrInput class="w-i" placeholder="*******" [(ngModel)]="createVsForm.password" name="password" />
+    </clr-input-container>
+  </clr-wizard-page>
+
+  <clr-wizard-page>
+    <ng-template clrPageTitle>Итог</ng-template>
+    <table class="table table-vertical">
+      <tbody>
+        <tr>
+          <th>Локация</th>
+          <td>{{ createVsForm.location_id || 'Не выбрана' }}</td>
+        </tr>
+        <tr>
+          <th>Группа серверов</th>
+          <td>{{ createVsForm.node_id || 'Не выбрана' }}</td>
+        </tr>
+        <tr>
+          <th>Тариф</th>
+          <td>{{ createVsForm.tariff_id || 'Не выбран' }}</td>
+        </tr>
+        <tr>
+          <th>Пароль</th>
+          <td>{{ createVsForm.password || 'Не задан' }}</td>
+        </tr>
+        <tr>
+          <th>Образ</th>
+          <td>{{ createVsForm.os || 'Не выбран' }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Порт</th>
+          <th>Выбран</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>HTTP (80)</td>
+          <td>{{ createVsForm.ports.http ? 'Да' : 'Нет' }}</td>
+        </tr>
+        <tr>
+          <td>HTTPS (443)</td>
+          <td>{{ createVsForm.ports.https ? 'Да' : 'Нет' }}</td>
+        </tr>
+        <tr>
+          <td>FTP (21)</td>
+          <td>{{ createVsForm.ports.ftp ? 'Да' : 'Нет' }}</td>
+        </tr>
+        <tr>
+          <td>SAMP (7777)</td>
+          <td>{{ createVsForm.ports.samp ? 'Да' : 'Нет' }}</td>
+        </tr>
+        <tr>
+          <td>Minecraft (25565)</td>
+          <td>{{ createVsForm.ports.minecraft ? 'Да' : 'Нет' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </clr-wizard-page>
+</clr-wizard>
+
+<div class="modal" *ngIf="cpModal">
+  <div class="modal-dialog" role="dialog" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button aria-label="Close" class="close" type="button" (click)="cpModal = false;">
+          <clr-icon aria-hidden="true" shape="close"></clr-icon>
+        </button>
+        <h3 class="modal-title">Изменить пароль</h3>
+      </div>
+      <div class="modal-body">
+        <form clrForm clrLayout="vertical">
+          <clr-input-container>
+            <label>Текущий пароль</label>
+            <input clrInput type="password" [(ngModel)]="changePasswordForm.old" name="old" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Пароль</label>
+            <input clrInput type="password" [(ngModel)]="changePasswordForm.new" name="new" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Повторите пароль</label>
+            <input clrInput type="password" [(ngModel)]="changePasswordForm.newr" name="newr" />
+          </clr-input-container>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" type="button" (click)="cpModal = false;">Отмена</button>
+        <button class="btn btn-primary" type="button" (click)="changePassword()">Создать</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" aria-hidden="true" *ngIf="cpModal"></div>

@@ -1,0 +1,52 @@
+<div class="login-wrapper">
+  <form class="login">
+    <section class="title">
+      <h3 class="welcome">Добро пожаловать в</h3>
+      НеХостинг
+      <h5 class="hint">Войдите в свой аккаунт или создайте новый</h5>
+    </section>
+    <div class="login-group" *ngIf="form === 'login'; else registerForm">
+      <clr-input-container>
+        <label class="clr-sr-only">Адрес электронной почты</label>
+        <input type="email" name="email" clrInput placeholder="user@mail.com" [(ngModel)]="login.email" />
+      </clr-input-container>
+      <clr-password-container>
+        <label class="clr-sr-only">Пароль</label>
+        <input type="password" name="password" clrPassword placeholder="*******" [(ngModel)]="login.password" />
+      </clr-password-container>
+      <div class="error active" *ngIf="error.length > 0">{{ error }}</div>
+      <button type="submit" class="btn btn-primary" [clrLoading]="loading" (click)="signin()">Войти</button>
+      <a routerLink="/auth/register" class="signup">У меня ещё нет аккаунта</a>
+    </div>
+    <ng-template #registerForm>
+      <div class="login-group">
+        <clr-input-container>
+          <label class="clr-sr-only">Имя</label>
+          <input type="text" name="firstname" clrInput placeholder="Иван" [(ngModel)]="register.firstname" />
+        </clr-input-container>
+        <clr-input-container>
+          <label class="clr-sr-only">Фамилия</label>
+          <input type="text" name="lastname" clrInput placeholder="Иванов" [(ngModel)]="register.lastname" />
+        </clr-input-container>
+        <clr-input-container>
+          <label class="clr-sr-only">Адрес электронной почты</label>
+          <input type="text" name="email" clrInput placeholder="user@mail.com" [(ngModel)]="register.email" />
+        </clr-input-container>
+        <clr-password-container>
+          <label class="clr-sr-only">Пароль</label>
+          <input type="password" name="password" clrPassword placeholder="*******" [(ngModel)]="register.password" />
+        </clr-password-container>
+        <clr-password-container>
+          <label class="clr-sr-only">Повторите пароль</label>
+          <input type="password" name="passwordr" clrPassword placeholder="*******" [(ngModel)]="register.passwordr" />
+        </clr-password-container>
+        <p>
+          Нажимая кнопку Создать аккаунт, Вы соглашаетесь с <a href="/assets/policy.pdf" target="_blank">Политикой конфиденциальности</a>, а также соглашаетесь с <a href="/assets/oferta.pdf" target="_blank">Договором-офертой</a>.
+        </p>
+        <div class="error active" *ngIf="error.length > 0">{{ error }}</div>
+        <button type="submit" class="btn btn-primary" [clrLoading]="loading" (click)="signup()">Создать аккаунт</button>
+        <a routerLink="/auth/login" class="signup">У меня уже есть аккаунт</a>
+      </div>
+    </ng-template>
+  </form>
+</div>

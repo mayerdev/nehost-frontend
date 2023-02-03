@@ -1,0 +1,82 @@
+<button class="btn btn-primary" (click)="createModal = true">Создать</button>
+
+<clr-datagrid>
+  <clr-dg-column>Код</clr-dg-column>
+  <clr-dg-column>Скидка</clr-dg-column>
+  <clr-dg-column>Использований осталось</clr-dg-column>
+  <clr-dg-column>Действия</clr-dg-column>
+
+  <clr-dg-row *ngFor="let item of promos">
+    <clr-dg-cell>{{ item._id }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.percent }}%</clr-dg-cell>
+    <clr-dg-cell>{{ item.usage == -1 ? 'Без ограничений' : (item.usage + ' раз') }}</clr-dg-cell>
+    <clr-dg-cell>
+      <a href="#" (click)="promo = item; editModal = true; false">Редактировать</a>
+      <a href="#" (click)="remove(item); false">Удалить</a>
+    </clr-dg-cell>
+  </clr-dg-row>
+</clr-datagrid>
+
+<div class="modal" *ngIf="editModal && promo">
+  <div class="modal-dialog" role="dialog" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button aria-label="Close" class="close" type="button" (click)="editModal = false;">
+          <clr-icon aria-hidden="true" shape="close"></clr-icon>
+        </button>
+        <h3 class="modal-title">Промокод {{ promo._id }}</h3>
+      </div>
+      <div class="modal-body">
+        <form clrForm clrLayout="vertical" clrLabelSize="4">
+          <clr-input-container>
+            <label>Скидка (%)</label>
+            <input clrInput type="number" min="1" step="0.1" max="100" [(ngModel)]="promo.percent" name="percent" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Использований (раз)</label>
+            <input clrInput type="number" min="-1" step="1" [(ngModel)]="promo.usage" name="usage" />
+            <span class="clr-subtext">-1 &mdash; &infin; использований</span>
+          </clr-input-container>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" type="button" (click)="editModal = false;">Отмена</button>
+        <button class="btn btn-primary" type="button" (click)="save()">Сохранить</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal" *ngIf="createModal">
+  <div class="modal-dialog" role="dialog" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button aria-label="Close" class="close" type="button" (click)="createModal = false;">
+          <clr-icon aria-hidden="true" shape="close"></clr-icon>
+        </button>
+        <h3 class="modal-title">Создать промокод</h3>
+      </div>
+      <div class="modal-body">
+        <form clrForm>
+          <clr-input-container>
+            <label>Код</label>
+            <input clrInput type="text" [(ngModel)]="createForm._id" name="code" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Скидка (%)</label>
+            <input clrInput type="number" min="1" step="0.1" max="100" [(ngModel)]="createForm.percent" name="percent" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Использований (раз)</label>
+            <input clrInput type="number" min="1" step="1" [(ngModel)]="createForm.usage" name="usage" />
+            <span class="clr-subtext">-1 &mdash; &infin; использований</span>
+          </clr-input-container>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" type="button" (click)="createModal = false;">Отмена</button>
+        <button class="btn btn-primary" type="button" (click)="create()">Создать</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" aria-hidden="true" *ngIf="editModal || createModal"></div>

@@ -1,0 +1,48 @@
+<button class="btn btn-primary" (click)="createModal = true">Создать</button>
+
+<clr-datagrid>
+  <clr-dg-column>ID</clr-dg-column>
+  <clr-dg-column>Тема обращения</clr-dg-column>
+  <clr-dg-column>Решено</clr-dg-column>
+  <clr-dg-column>Действия</clr-dg-column>
+
+  <clr-dg-row *ngFor="let item of tickets">
+    <clr-dg-cell>{{ item._id }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.title }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.solved ? 'Да' : 'Нет' }}</clr-dg-cell>
+    <clr-dg-cell>
+      <a href="#" (click)="view(item._id); false">Открыть</a>
+    </clr-dg-cell>
+  </clr-dg-row>
+</clr-datagrid>
+
+<div class="modal" *ngIf="viewModal && !!ticket">
+  <div class="modal-dialog" role="dialog" aria-hidden="true" style="overflow: auto;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button aria-label="Close" class="close" type="button" (click)="viewModal = false;">
+          <clr-icon aria-hidden="true" shape="close"></clr-icon>
+        </button>
+        <h3 class="modal-title">Просмотр обращения "{{ ticket.title }}"</h3>
+      </div>
+      <div class="modal-body">
+        <ul class="clr-timeline clr-timeline-vertical">
+          <li class="clr-timeline-step" *ngFor="let item of messages; let first = first">
+            <div class="clr-timeline-step-header">{{ getDate(item._id) }}</div>
+            <clr-icon shape="dot-circle" *ngIf="!first; else showStatus"></clr-icon>
+            <ng-template #showStatus>
+              <clr-spinner clrMedium *ngIf="item.status === 'wait'"></clr-spinner>
+              <clr-icon shape="success-standard" *ngIf="item.status === 'success'"></clr-icon>
+              <clr-icon shape="error-standard" *ngIf="item.status === 'fail'"></clr-icon>
+            </ng-template>
+            <div class="clr-timeline-step-body">
+              <span class="clr-timeline-step-title">{{ item.title }}</span>
+              <span class="clr-timeline-step-description">{{ item.text }}</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" aria-hidden="true" *ngIf="viewModal"></div>

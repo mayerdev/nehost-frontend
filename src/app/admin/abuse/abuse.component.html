@@ -1,0 +1,89 @@
+<button class="btn btn-primary" (click)="createModal = true">Создать</button>
+
+<clr-datagrid>
+  <clr-dg-column>Пользователь</clr-dg-column>
+  <clr-dg-column>Заголовок</clr-dg-column>
+  <clr-dg-column>Статус</clr-dg-column>
+  <clr-dg-column>Действия</clr-dg-column>
+
+  <clr-dg-row *ngFor="let item of abuses">
+    <clr-dg-cell>ID {{ item.user.numId }}: {{ item.user.email }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.title }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.resolved ? 'Получен ответ' : 'Ожидание' }}</clr-dg-cell>
+    <clr-dg-cell>
+      <a href="#" (click)="edit(item); false">Редактировать</a>
+      <a href="#" (click)="remove(item); false">Удалить</a>
+    </clr-dg-cell>
+  </clr-dg-row>
+</clr-datagrid>
+
+<div class="modal" *ngIf="editModal && abuse">
+  <div class="modal-dialog" role="dialog" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button aria-label="Close" class="close" type="button" (click)="editModal = false;">
+          <clr-icon aria-hidden="true" shape="close"></clr-icon>
+        </button>
+        <h3 class="modal-title">Жалоба &laquo;{{ abuse.title }}&raquo;</h3>
+      </div>
+      <div class="modal-body">
+        <form clrForm clrLayout="vertical" clrLabelSize="4">
+          <clr-input-container>
+            <label>Пользователь</label>
+            <input clrInput type="text" [(ngModel)]="abuse.user._id" placeholder="ID / E-mail" name="user" readonly />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Заголовок</label>
+            <input clrInput type="text" [(ngModel)]="abuse.title" name="title" />
+          </clr-input-container>
+          <clr-textarea-container>
+            <label>Текст жалобы</label>
+            <textarea clrTextarea [(ngModel)]="abuse.text" name="text" required></textarea>
+          </clr-textarea-container>
+          <p>
+            <b>Ответ:</b>
+            <br />
+            {{ abuse.resolved ? abuse.answer : 'Ответ ещё не был получен.' }}
+          </p>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" type="button" (click)="editModal = false;">Отмена</button>
+        <button class="btn btn-primary" type="button" (click)="save()">Сохранить</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal" *ngIf="createModal">
+  <div class="modal-dialog" role="dialog" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button aria-label="Close" class="close" type="button" (click)="createModal = false;">
+          <clr-icon aria-hidden="true" shape="close"></clr-icon>
+        </button>
+        <h3 class="modal-title">Создать жалобу</h3>
+      </div>
+      <div class="modal-body">
+        <form clrForm>
+          <clr-input-container>
+            <label>Пользователь</label>
+            <input clrInput type="text" [(ngModel)]="createForm.user" placeholder="ID / E-mail" name="user" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Заголовок</label>
+            <input clrInput type="text" [(ngModel)]="createForm.title" name="title" />
+          </clr-input-container>
+          <clr-textarea-container>
+            <label>Текст жалобы</label>
+			      <textarea clrTextarea [(ngModel)]="createForm.text" name="text" required></textarea>
+          </clr-textarea-container>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" type="button" (click)="createModal = false;">Отмена</button>
+        <button class="btn btn-primary" type="button" (click)="create()">Создать</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" aria-hidden="true" *ngIf="editModal || createModal"></div>

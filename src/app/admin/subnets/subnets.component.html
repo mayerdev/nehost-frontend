@@ -1,0 +1,95 @@
+<button class="btn btn-primary" (click)="createModal = true">Создать</button>
+
+<clr-datagrid>
+  <clr-dg-column>ID</clr-dg-column>
+  <clr-dg-column>Нода</clr-dg-column>
+  <clr-dg-column>Подсеть</clr-dg-column>
+  <clr-dg-column>Начало</clr-dg-column>
+  <clr-dg-column>Конец</clr-dg-column>
+  <clr-dg-column>Действия</clr-dg-column>
+
+  <clr-dg-row *ngFor="let item of subnets">
+    <clr-dg-cell>{{ item._id }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.node.name }} / {{ item.node.hostname }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.subnet }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.subnet }}.{{ item.start }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.subnet }}.{{ item.end }}</clr-dg-cell>
+    <clr-dg-cell>
+      <a href="#" (click)="view(item._id); false">Просмотреть</a>
+    </clr-dg-cell>
+  </clr-dg-row>
+</clr-datagrid>
+
+<div class="modal" *ngIf="viewModal">
+  <div class="modal-dialog" role="dialog" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button aria-label="Close" class="close" type="button" (click)="viewModal = false;">
+          <clr-icon aria-hidden="true" shape="close"></clr-icon>
+        </button>
+        <h3 class="modal-title">Информация о подсети</h3>
+      </div>
+      <div class="modal-body scrollable">
+        <clr-datagrid>
+          <clr-dg-column>IP</clr-dg-column>
+          <clr-dg-column>Сервер</clr-dg-column>
+          <clr-dg-column>Занят</clr-dg-column>
+
+          <clr-dg-row *ngFor="let item of ips">
+            <clr-dg-cell>{{ item.ip }}</clr-dg-cell>
+            <clr-dg-cell *ngIf="item.vserver">{{ item.vserver.ctid }} / {{ item.vserver._id }}</clr-dg-cell>
+            <clr-dg-cell *ngIf="!item.vserver">Не привязан</clr-dg-cell>
+            <clr-dg-cell style="cursor: pointer; color:   #2196f3;" (click)="toggle(item._id)">{{ item.reserved ? 'Да' : 'Нет' }}</clr-dg-cell>
+          </clr-dg-row>
+        </clr-datagrid>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" type="button" (click)="viewModal = false;">Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" *ngIf="createModal">
+  <div class="modal-dialog" role="dialog" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button aria-label="Close" class="close" type="button" (click)="createModal = false;">
+          <clr-icon aria-hidden="true" shape="close"></clr-icon>
+        </button>
+        <h3 class="modal-title">Создать подсеть</h3>
+      </div>
+      <div class="modal-body">
+        <form clrForm>
+          <clr-combobox-container>
+            <label>Нода</label>
+            <clr-combobox [(ngModel)]="createForm.node_id" name="node_id" required placeholder="Выберите ноду">
+              <clr-options>
+                <clr-option *ngFor="let item of nodes" [clrValue]="item._id">{{ item.name }} / {{ item.hostname }}
+                </clr-option>
+              </clr-options>
+            </clr-combobox>
+          </clr-combobox-container>
+          <clr-input-container>
+            <label>Подсеть (пример: 192.168.1)</label>
+            <input clrInput type="text" [(ngModel)]="createForm.subnet" name="subnet" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Начало</label>
+            <input clrInput type="text" [(ngModel)]="createForm.start" name="start" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Конец</label>
+            <input clrInput type="text" [(ngModel)]="createForm.end" name="end" />
+          </clr-input-container>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" type="button" (click)="createModal = false;">Отмена</button>
+        <button class="btn btn-primary" type="button" (click)="create()">Создать</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" aria-hidden="true" *ngIf="viewModal"></div>
+<div class="modal-backdrop" aria-hidden="true" *ngIf="createModal"></div>

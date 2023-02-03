@@ -1,0 +1,116 @@
+<clr-datagrid>
+  <clr-dg-column>ID</clr-dg-column>
+  <clr-dg-column>Имя</clr-dg-column>
+  <clr-dg-column>Фамилия</clr-dg-column>
+  <clr-dg-column>Email</clr-dg-column>
+  <clr-dg-column>Баланс</clr-dg-column>
+  <clr-dg-column>Группа</clr-dg-column>
+  <clr-dg-column>Действия</clr-dg-column>
+
+  <clr-dg-row *ngFor="let item of users">
+    <clr-dg-cell>{{ item.numId }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.firstname }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.lastname }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.email }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.balance }} RUB</clr-dg-cell>
+    <clr-dg-cell>{{ item.group }}</clr-dg-cell>
+    <clr-dg-cell>
+      <a href="#" (click)="user = item; modal = true; false">Редактировать</a>
+    </clr-dg-cell>
+  </clr-dg-row>
+</clr-datagrid>
+
+<div class="modal" *ngIf="modal && user">
+  <div class="modal-dialog" role="dialog" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button aria-label="Close" class="close" type="button" (click)="modal = false;">
+          <clr-icon aria-hidden="true" shape="close"></clr-icon>
+        </button>
+        <h3 class="modal-title">{{ user.email }}</h3>
+      </div>
+      <div class="modal-body">
+        <form clrForm>
+          <clr-input-container>
+            <label>Имя</label>
+            <input clrInput type="text" [(ngModel)]="user.firstname" name="firstname" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Фамилия</label>
+            <input clrInput type="text" [(ngModel)]="user.lastname" name="lastname" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Пароль</label>
+            <input clrInput type="text" [(ngModel)]="user.password" name="password" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Баланс</label>
+            <input clrInput type="text" [(ngModel)]="user.balance" name="balance" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Лимит</label>
+            <input clrInput type="text" [(ngModel)]="user.credit_limit" name="credit_limit" />
+          </clr-input-container>
+          <br>
+          <clr-input-container>
+            <label>ФИО</label>
+            <input clrInput type="text" [(ngModel)]="user.dogovor.fio" name="fio" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Данные паспорта</label>
+            <input clrInput type="text" [(ngModel)]="user.dogovor.passport" name="passport" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Email для договора</label>
+            <input clrInput type="text" [(ngModel)]="user.dogovor.email" name="dogovor_email" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Телефон для договора</label>
+            <input clrInput type="text" [(ngModel)]="user.dogovor.phone" name="phone" />
+          </clr-input-container>
+          <clr-checkbox-container>
+            <clr-checkbox-wrapper>
+              <input type="checkbox" clrCheckbox [(ngModel)]="user.dogovor.accepted" name="accepted" />
+              <label>Договор акцептован</label>
+            </clr-checkbox-wrapper>
+          </clr-checkbox-container>
+          <br />
+          <clr-radio-wrapper>
+            <input type="radio" clrRadio value="user" name="group" [(ngModel)]="user.group" />
+            <label>Пользователь</label>
+          </clr-radio-wrapper>
+          <clr-radio-wrapper>
+            <input type="radio" clrRadio value="admin" name="group" [(ngModel)]="user.group" />
+            <label>Администратор</label>
+          </clr-radio-wrapper>
+          <br />
+          <clr-input-container>
+            <label>Лимит vCPU</label>
+            <input clrInput type="text" [(ngModel)]="user.limits.vcpu" name="vcpu" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Лимит RAM</label>
+            <input clrInput type="text" [(ngModel)]="user.limits.ram" name="ram" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Лимит диска</label>
+            <input clrInput type="text" [(ngModel)]="user.limits.disk" name="disk" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Лимит портов</label>
+            <input clrInput type="text" [(ngModel)]="user.limits.ports" name="ports" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Лимит сайтов</label>
+            <input clrInput type="text" [(ngModel)]="user.limits.sites" name="sites" />
+          </clr-input-container>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" type="button" (click)="modal = false;">Отмена</button>
+        <button class="btn btn-primary" type="button" (click)="save()">Сохранить</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" aria-hidden="true" *ngIf="modal"></div>

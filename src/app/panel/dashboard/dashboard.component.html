@@ -1,0 +1,79 @@
+<h2>{{ api.session.firstname }}, добро пожаловать.</h2>
+
+<h3>Лимиты на услугу Виртуальные серверы</h3>
+<div class="clr-row">
+  <div class="clr-col-12 clr-col-sm-3">
+    <div class="card">
+      <div class="card-block">
+        <h4 class="card-title">vCPU</h4>
+        <p class="card-text">{{ limits.vcpu }} / {{ api.session.limits.vcpu }}</p>
+      </div>
+      <div class="card-footer">
+        <div class="progress" [ngClass]="{ danger: (100 * limits.vcpu / api.session.limits.vcpu) >= 100 }">
+          <progress [value]="100 * limits.vcpu / api.session.limits.vcpu" max="100"></progress>
+        </div>
+        <a href="#" class="card-link" (click)="requestIncrease('vcpu'); false">Запросить повышение</a>
+      </div>
+    </div>
+  </div>
+  <div class="clr-col-12 clr-col-sm-3">
+    <div class="card">
+      <div class="card-block">
+        <h4 class="card-title">ОЗУ</h4>
+        <p class="card-text">{{ limits.ram }} / {{ api.session.limits.ram }} GB</p>
+      </div>
+      <div class="card-footer">
+        <div class="progress" [ngClass]="{ danger: (100 * limits.ram / api.session.limits.ram) >= 100 }">
+          <progress [value]="100 * limits.ram / api.session.limits.ram" max="100"></progress>
+        </div>
+        <a href="#" class="card-link" (click)="requestIncrease('ram'); false">Запросить повышение</a>
+      </div>
+    </div>
+  </div>
+  <div class="clr-col-12 clr-col-sm-3">
+    <div class="card">
+      <div class="card-block">
+        <h4 class="card-title">Диск</h4>
+        <p class="card-text">{{ limits.disk }} / {{ api.session.limits.disk }} GB</p>
+      </div>
+      <div class="card-footer">
+        <div class="progress" [ngClass]="{ danger: (100 * limits.disk / api.session.limits.disk) >= 100 }">
+          <progress [value]="100 * limits.disk / api.session.limits.disk" max="100"></progress>
+        </div>
+        <a href="#" class="card-link" (click)="requestIncrease('disk'); false">Запросить повышение</a>
+      </div>
+    </div>
+  </div>
+  <div class="clr-col-12 clr-col-sm-3">
+    <div class="card">
+      <div class="card-block">
+        <h4 class="card-title">Порты vNAT</h4>
+        <p class="card-text">{{ limits.ports }} / {{ api.session.limits.ports }}</p>
+      </div>
+      <div class="card-footer">
+        <div class="progress" [ngClass]="{ danger: (100 * limits.ports / api.session.limits.ports) >= 100 }">
+          <progress [value]="100 * limits.ports / api.session.limits.ports" max="100"></progress>
+        </div>
+        <a  href="#" class="card-link" (click)="requestIncrease('ports'); false">Запросить повышение</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3>Лимиты на услугу Хостинг сайтов</h3>
+<div class="clr-row">
+  <div class="clr-col-12 clr-col-sm-3">
+    <div class="card">
+      <div class="card-block">
+        <h4 class="card-title">Сайты</h4>
+        <p class="card-text">{{ limits.sites }} / {{ api.session.limits.sites }}</p>
+      </div>
+      <div class="card-footer">
+        <div class="progress" [ngClass]="{ danger: (100 * limits.sites / api.session.limits.sites) >= 100 }">
+          <progress [value]="100 * limits.sites / api.session.limits.sites" max="100"></progress>
+        </div>
+        <a href="#" class="card-link" (click)="requestIncrease('sites'); false">Запросить повышение</a>
+      </div>
+    </div>
+  </div>
+</div>

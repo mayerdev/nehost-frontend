@@ -1,0 +1,125 @@
+<div class="clr-row" *ngIf="!reinstall">
+  <div class="clr-col-lg-4 clr-col-md-6 clr-col-12" *ngFor="let item of vservers">
+    <div class="card">
+      <h4 class="card-header">
+        Виртуальный сервер №{{ item.numId }}
+      </h4>
+      <div class="card-block">
+        <div class="card-text" *ngIf="!item.user; else hasAdmin">
+          ОС: {{ templates[item.os] }}<br>
+          Приватный IP: {{ item.ip }}<br>
+          Пароль от root: {{ item.password }}<br>
+          Дата окончания: {{ formatDate(item.ending_date) }}<br>
+          Ежемесячная стоимость: {{ formatPrice(item.price) }}
+        </div>
+
+        <ng-template #hasAdmin>
+          <div class="card-text">
+            ОС: {{ templates[item.os] }}<br>
+            Приватный IP: {{ item.ip }}<br>
+            Пароль от root: {{ item.password }}<br>
+            Дата окончания: {{ formatDate(item.ending_date) }}<br>
+            Ежемесячная стоимость: {{ formatPrice(item.price) }}<br>
+            <br>
+            {{ item.user }}
+          </div>
+        </ng-template>
+      </div>
+      <div class="card-footer">
+        <div class="btn-group btn-primary">
+          <button class="btn" [clrLoading]="vncLoader" (click)="getVnc(item._id)">
+            <clr-icon shape="terminal"></clr-icon>
+          </button>
+          <button class="btn" [clrLoading]="rebootLoader" (click)="reboot(item._id)">
+            <clr-icon shape="refresh"></clr-icon>
+          </button>
+          <button class="btn" [clrLoading]="resetLoader" (click)="reset(item._id)">
+            <clr-icon shape="key"></clr-icon>
+          </button>
+          <button class="btn" (click)="reinstall = true; reinstallPayload.vserver_id = item._id">
+            <clr-icon shape="install"></clr-icon>
+          </button>
+          <button class="btn" [clrLoading]="deleteLoader" (click)="delete(item._id)">
+            <clr-icon shape="trash"></clr-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="btn btn-link" *ngIf="reinstall" (click)="reinstall = false;">Назад</button>
+
+<div class="clr-row" *ngIf="reinstall">
+  <div class="clr-col-lg-4 clr-col-sm-6 clr-col-12">
+    <div class="card">
+      <h4 class="card-header">CentOS 7</h4>
+      <div class="card-footer">
+        <button class="btn btn-primary" (click)="reinstallPayload.os = _templates.centos7"
+          [disabled]="reinstallPayload.os === _templates.centos7">Выбрать</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="clr-col-lg-4 clr-col-sm-6 clr-col-12">
+    <div class="card">
+      <h4 class="card-header">RockyLinux 8</h4>
+      <div class="card-footer">
+        <button class="btn btn-primary" (click)="reinstallPayload.os = _templates.rockylinux8"
+          [disabled]="reinstallPayload.os === _templates.rockylinux8">Выбрать</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="clr-col-lg-4 clr-col-sm-6 clr-col-12">
+    <div class="card">
+      <h4 class="card-header">Debian 10</h4>
+      <div class="card-footer">
+        <button class="btn btn-primary" (click)="reinstallPayload.os = _templates.debian10"
+          [disabled]="reinstallPayload.os === _templates.debian10">Выбрать</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="clr-col-lg-4 clr-col-sm-6 clr-col-12">
+    <div class="card">
+      <h4 class="card-header">Debian 11</h4>
+      <div class="card-footer">
+        <button class="btn btn-primary" (click)="reinstallPayload.os = _templates.debian11"
+          [disabled]="reinstallPayload.os === _templates.debian11">Выбрать</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="clr-col-lg-4 clr-col-sm-6 clr-col-12">
+    <div class="card">
+      <h4 class="card-header">Ubuntu 20.04</h4>
+      <div class="card-footer">
+        <button class="btn btn-primary" (click)="reinstallPayload.os = _templates.ubuntu20"
+          [disabled]="reinstallPayload.os === _templates.ubuntu20">Выбрать</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="btn btn-danger" *ngIf="reinstall" style="margin-top: 32px;" [clrLoading]="reinstallLoader" [disabled]="!reinstallPayload.os" (click)="reinstallOS()">Удалить все данные и переустановить</button>
+
+<div class="modal" *ngIf="vnc">
+  <div class="modal-dialog" role="dialog" aria-hidden="true" style="width: 800px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button aria-label="Close" class="close" type="button" (click)="vnc = false;">
+          <clr-icon aria-hidden="true" shape="close"></clr-icon>
+        </button>
+        <h3 class="modal-title">Консоль</h3>
+      </div>
+      <div class="modal-body">
+        <iframe [src]="vncUrl | safe" *ngIf="vncUrl" style="height: 600px; width: 100%; border: none"></iframe>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" type="button" (click)="vnc = false;">Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" aria-hidden="true" *ngIf="vnc"></div>

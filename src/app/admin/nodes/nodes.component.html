@@ -1,0 +1,135 @@
+<button class="btn btn-primary" (click)="createModal = true">Создать</button>
+
+<clr-datagrid>
+  <clr-dg-column>ID</clr-dg-column>
+  <clr-dg-column>Локация</clr-dg-column>
+  <clr-dg-column>Отобр. нейм</clr-dg-column>
+  <clr-dg-column>Наименование</clr-dg-column>
+  <clr-dg-column>Хост</clr-dg-column>
+  <clr-dg-column>Доступен для заказа</clr-dg-column>
+  <clr-dg-column>Действия</clr-dg-column>
+
+  <clr-dg-row *ngFor="let item of nodes">
+    <clr-dg-cell>{{ item._id }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.location.name }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.visible_name }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.name }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.hostname }}</clr-dg-cell>
+    <clr-dg-cell>{{ item.available ? 'Да' : 'Нет' }}</clr-dg-cell>
+    <clr-dg-cell>
+      <a href="#" (click)="node = item; editModal = true; false">Редактировать</a>
+    </clr-dg-cell>
+  </clr-dg-row>
+</clr-datagrid>
+
+<div class="modal" *ngIf="editModal && node">
+  <div class="modal-dialog" role="dialog" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button aria-label="Close" class="close" type="button" (click)="editModal = false;">
+          <clr-icon aria-hidden="true" shape="close"></clr-icon>
+        </button>
+        <h3 class="modal-title">{{ node.name }}</h3>
+      </div>
+      <div class="modal-body">
+        <form clrForm>
+          <clr-combobox-container>
+            <label>Локация</label>
+            <clr-combobox [(ngModel)]="node.location_id" name="location_id" required
+              placeholder="Выберите локацию">
+              <clr-options>
+                <clr-option *ngFor="let item of locations" [clrValue]="item._id">{{ item.name }}</clr-option>
+              </clr-options>
+            </clr-combobox>
+          </clr-combobox-container>
+          <clr-input-container>
+            <label>Отобр. нейм</label>
+            <input clrInput type="text" [(ngModel)]="node.visible_name" name="visible_name" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Наименование</label>
+            <input clrInput type="text" [(ngModel)]="node.name" name="name" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Хостнейм</label>
+            <input clrInput type="text" [(ngModel)]="node.hostname" name="hostname" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Логин</label>
+            <input clrInput type="text" [(ngModel)]="node.username" name="username" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Пароль</label>
+            <input clrInput type="text" [(ngModel)]="node.password" name="password" />
+          </clr-input-container>
+          <clr-checkbox-container>
+            <clr-checkbox-wrapper>
+              <input type="checkbox" clrCheckbox [value]="true" [(ngModel)]="node.available" name="available" />
+              <label>Доступна для заказа</label>
+            </clr-checkbox-wrapper>
+          </clr-checkbox-container>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" type="button" (click)="editModal = false;">Отмена</button>
+        <button class="btn btn-primary" type="button" (click)="save()">Сохранить</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal" *ngIf="createModal">
+  <div class="modal-dialog" role="dialog" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button aria-label="Close" class="close" type="button" (click)="createModal = false;">
+          <clr-icon aria-hidden="true" shape="close"></clr-icon>
+        </button>
+        <h3 class="modal-title">Создать ноду</h3>
+      </div>
+      <div class="modal-body">
+        <form clrForm>
+          <clr-combobox-container>
+            <label>Локация</label>
+            <clr-combobox [(ngModel)]="createForm.location_id" name="location_id" required
+              placeholder="Выберите локацию">
+              <clr-options>
+                <clr-option *ngFor="let item of locations" [clrValue]="item._id">{{ item.name }}</clr-option>
+              </clr-options>
+            </clr-combobox>
+          </clr-combobox-container>
+          <clr-input-container>
+            <label>Отобр. нейм</label>
+            <input clrInput type="text" [(ngModel)]="createForm.visible_name" name="visible_name" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Наименование</label>
+            <input clrInput type="text" [(ngModel)]="createForm.name" name="name" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Хостнейм</label>
+            <input clrInput type="text" [(ngModel)]="createForm.hostname" name="hostname" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Логин</label>
+            <input clrInput type="text" [(ngModel)]="createForm.username" name="username" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Пароль</label>
+            <input clrInput type="text" [(ngModel)]="createForm.password" name="password" />
+          </clr-input-container>
+          <clr-checkbox-container>
+            <clr-checkbox-wrapper>
+              <input type="checkbox" clrCheckbox [value]="true" [(ngModel)]="createForm.available" name="available" />
+              <label>Доступна для заказа</label>
+            </clr-checkbox-wrapper>
+          </clr-checkbox-container>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" type="button" (click)="createModal = false;">Отмена</button>
+        <button class="btn btn-primary" type="button" (click)="create()">Создать</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" aria-hidden="true" *ngIf="editModal || createModal"></div>
